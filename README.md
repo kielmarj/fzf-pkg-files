@@ -12,7 +12,10 @@
 
 </details><br>
 
-[![fzf-pkg-files-screenshot.png](assets/fzf-pkg-files-screenshot.png)](https://asciinema.org/a/691213)
+<a href="https://asciinema.org/a/691213" target="_blank">
+    <img src="assets/fzf-pkg-files-screenshot.png" alt="fzf-pkg-files-screenshot">
+</a>
+
 
 `fzf-pkg-files` is a user-friendly Bash script that leverages `fzf` to browse and preview all files installed by a pacman-managed package. This tool is particularly useful for Arch Linux users who want to quickly locate and inspect files associated with a specific package.
 
