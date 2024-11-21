@@ -110,7 +110,7 @@ get_preview_command() {
         bat --language=markdown "$file"
     #### PDF
     elif [[ "$file" =~ \.pdf$ ]]; then
-        pdftotext -layout "$file" - | fold -s -w ${FZF_PREVIEW_COLUMNS} | bat --language=markdown
+        pdftotext -nodiag -layout "$file" - | bat --language=man
     #### PKGBUILD
     elif [[ "$file" =~ PKGBUILD$ ]]; then
         bat --language=PKGBUILD "$file"
@@ -178,12 +178,12 @@ export -f get_preview_command
 # List all files installed by pkg except dirs & empty files
 pacman -Qql "$package" | files_only | \
 # Begin fzf options
-    fzf -i --pointer ">>" --marker "**" --multi --layout=reverse --border=double \
+    fzf -i --pointer ">>" --marker "**" --multi --layout=reverse --border=bold \
     --highlight-line --keep-right --header "$headerInfo1
     $headerInfo2" \
     --color="bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8,fg:#cdd6f4" \
     --color="header:#f38ba8,info:#cba6f7,pointer:#f5e0dc,marker:#f5e0dc" \
     --color="fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8" \
-    --preview="bash -c 'get_preview_command {}'" --preview-window="right,60%,wrap" \
+    --preview="bash -c 'get_preview_command {}'" --preview-window="right,60%,wrap,border-rounded" \
     --bind="enter:execute(bat {+})" \
     --bind="esc:accept"
