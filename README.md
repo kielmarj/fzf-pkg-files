@@ -12,12 +12,6 @@
 
 </details><br>
 
-<<<<<<< Updated upstream
-![fzf-pkg-files-screenshot](assets/fzf-pkg-files-screenshot.png)
-
-`fzf-pkg-files` is a user-friendly Bash script that leverages `fzf` to browse and preview all files installed by a pacman-managed package. This tool is particularly useful for Arch Linux users who want to quickly locate and inspect files associated with a specific package. 
-=======
-<<<<<<< HEAD
 ![fzf-pkg-files-screenshot.png](assets/fzf-pkg-files-screenshot.png)
 
 `fzf-pkg-files` is a user-friendly Bash script that leverages `fzf` to browse and preview all files installed by a pacman-managed package. This tool is particularly useful for Arch Linux users who want to quickly locate and inspect files associated with a specific package.
@@ -26,24 +20,11 @@
     <img src="https://github.com/kielmarj/fzf-pkg-files/blob/515af637ea1ef3a0f5667d6d3dfe27c008ae4a90/assets/fzf-pkg-files.gif" alt="fzf-pkg-files.gif">
 </a>
 <sub><i><code>gif</code> made with <code>asciinema</code> and <code>agg</code></i></sub><br>
-=======
-![fzf-pkg-files-screenshot](assets/fzf-pkg-files-screenshot.png)
-
-`fzf-pkg-files` is a user-friendly Bash script that leverages `fzf` to browse and preview all files installed by a pacman-managed package. This tool is particularly useful for Arch Linux users who want to quickly locate and inspect files associated with a specific package. 
->>>>>>> 39f696dba63883488eaeca04a9ae3804870aa508
->>>>>>> Stashed changes
+<br>
 
 `fzf-pkg-files` is straightforward and easy to use. It only requires a single argument: either the name of an installed package, or the name of an installed command.
 
 ## Features
-
-[![fzf-pkg-files.gif](https://github.com/kielmarj/fzf-pkg-files/blob/main/assets/fzf-pkg-files.gif)](https://asciinema.org/a/691213)
-
-<div align="right"><sub><i>
-
-`.gif` made with [`asciinema`](https://asciinema.org/a/691213) and [`agg`](https://github.com/asciinema/agg)
-
-</i></sub></div>
 
 <table border="0">
 <caption><b><i>&bigstar; Interactive File Browsing &bigstar;</i></b></caption>
