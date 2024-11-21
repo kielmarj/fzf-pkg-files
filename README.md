@@ -54,7 +54,7 @@
    ```
 2. **CD into the cloned-directory and make the script executable**:
    ```bash
-   cd fzf-pkg-files
+   cd fzf-pkg-files/script
    chmod +x fzf-pkg-files
    ```
 3. **Optionally, move the script to a directory in your PATH**
