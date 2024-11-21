@@ -1,0 +1,189 @@
+#!/usr/bin/env bash
+
+# ------------------------------------------------------------------------------
+#    DATE 2024-11-18 | MODIFIED 2024-11-20
+#    FILE fzf-pkg-files - Use fzf to browse all files installed by a package
+#         in the local pacman database.
+#   USAGE $0 <NAME OF INSTALLED PACKAGE OR COMMAND>
+#  AUTHOR © 2024 Jessica Kielmar <kielmarj@gmail.com>
+#    REPO https://github.com/kielmarj/fzf-pkg-files
+# LICENSE MIT
+# ------------------------------------------------------------------------------
+
+help_message() {
+    echo "USAGE: $0 <NAME OF PACMAN-INSTALLED PACKAGE OR COMMAND>"
+}
+
+# Print help & exit if thre isn't exactly 1 arg, or if $1 = 'help'
+if [[ $# -ne 1 ]] || [[ "$1" =~ ^(h|help|-h|--help)$ ]]; then
+    help_message
+    exit 1
+fi
+
+# Check dependencies
+for dep in fzf bat pacman; do
+    if ! command -v "$dep" &>/dev/null; then
+        echo "Error: $dep is required but not installed." >&2
+        exit 1
+    fi
+done
+
+# Determine if the provided argument is an installed package or command
+if ! pacman -Qi "$1" &>/dev/null && ! pacman -Qo "$1" &>/dev/null; then
+    echo "'$1' not found in local pacman database."
+    echo "Try 'pacman -Ss $1' to search for the correct package name."
+    help_message
+    exit 1
+elif pacman -Qi "$1" >/dev/null 2>&1; then
+    package="$1"
+else
+    package=$(pacman -Qo "$1" | awk '{print $5}')
+fi
+
+# Function to filter directories & empty files out of the fzf preview
+files_only() {
+    while read -r pkg_file; do
+        if [[ -f "$pkg_file" && -r "$pkg_file" && -s "$pkg_file" ]]; then
+            echo "$pkg_file"
+        fi
+    done
+}
+
+# Define header for displaying usage information in fzf
+headerInfo1="TAB:select | ENTER:pager | ESC:Exit, print paths to stdout"
+headerInfo2="ALL FILES INSTALLED BY '$package':"
+
+# Core function for determining file type & appropriate preview command
+get_preview_command() {
+    local file=$1
+    local type=$(file -b --mime-type "$file")
+    local encoding=$(file -b --mime-encoding "$file")
+
+    COLUMNS="80"
+
+    # Logic for determining the file type and selecting the appropriate preview
+    # command based on the file extension.
+    #### ASCIIDOC
+    if [[ "$file" =~ \.(adoc|asciidoc)$ ]]; then
+        bat --language=adoc "$file"
+    #### AWK
+    elif [[ "$file" =~ \.awk$ ]]; then
+        bat --language=awk "$file"
+    #### BIB
+    elif [[ "$file" =~ \.bib$ ]]; then
+        bat --language=bib "$file"
+    #### C
+    elif [[ "$file" =~ \.c$ ]]; then
+        bat --language=c "$file"
+    #### C++
+    elif [[ "$file" =~ \.(c\+\+|cpp|cxx|cp|cc|h|hh|hpp)$ ]]; then
+        bat --language=cpp "$file"
+    #### COFFEE
+    elif [[ "$file" =~ \.coffee$ ]]; then
+        bat --language=coffee "$file"
+    #### CSS
+    elif [[ "$file" =~ \.css$ ]]; then
+        bat --language=css "$file"
+    #### CSV
+    elif [[ "$file" =~ \.csv$ ]]; then
+        bat --language=csv "$file"
+    #### FISH
+    elif [[ "$file" =~ \.fish$ ]]; then
+        bat --language=fish "$file"
+    #### HTML
+    elif [[ "$file" =~ \.html$ ]]; then
+        html2markdown < "$file" | fold -s | bat --language=markdown
+    #### INFO PAGES
+    elif [[ "$file" =~ ^/usr/share/info/.*\.gz$ ]]; then
+        zcat "$file" | info --subnodes -o - | bat --language=py
+    #### JS
+	elif [[ "$file" =~ \.js$ ]]; then
+        bat --language=js "$file"
+    #### JSON/JSONC
+	elif [[ "$file" =~ \.(json|jsonc)$ ]]; then
+        bat --language=json "$file"
+    #### MANPAGES
+    elif [[ "$file" =~ ^/usr/share/man/.*\.gz$ ]]; then
+        man --nh --nj "$file" 2>/dev/null | bat --language=groovy
+    #### MARKDOWN
+    elif [[ "$file" =~ \.md$ ]]; then
+        bat --language=markdown "$file"
+    #### PDF
+    elif [[ "$file" =~ \.pdf$ ]]; then
+        pdftotext -layout "$file" - | fold -s -w ${FZF_PREVIEW_COLUMNS} | bat --language=markdown
+    #### PKGBUILD
+    elif [[ "$file" =~ PKGBUILD$ ]]; then
+        bat --language=PKGBUILD "$file"
+    #### PY
+	elif [[ "$file" =~ \.py$ ]]; then
+        bat --language=py "$file"
+    #### RST
+    elif [[ "$file" =~ \.rst$ ]]; then
+        bat --language=rst "$file"
+    #### SASS
+    elif [[ "$file" =~ \.sass$ ]]; then
+        bat --language=sass "$file"
+    #### SCSS
+    elif [[ "$file" =~ \.scss$ ]]; then
+        bat --language=scss "$file"
+    #### SHELL
+    elif [[ "$file" =~ \.sh$ ]]; then
+        bat --language=sh "$file"
+    #### SQL
+    elif [[ "$file" =~ \.sql$ ]]; then
+        bat --language=sql "$file"
+    #### TOML
+    elif [[ "$file" =~ \.toml$ ]]; then
+        bat --language=toml "$file"
+    #### TS
+    elif [[ "$file" =~ \.ts$ ]]; then
+        bat --language=ts "$file"
+    #### TSV
+    elif [[ "$file" =~ \.tsv$ ]]; then
+        bat --language=tsv "$file"
+    #### XML
+    elif [[ "$file" =~ \.xml$ ]]; then
+        bat --language=xml "$file"
+    #### YML/YAML
+	elif [[ "$file" =~ \.(yml|yaml)$ ]]; then
+        bat --language=yaml "$file"
+
+    # Process remaining files based on MIME type or encoding
+    #### TEXT CATCH-ALL for misc text files
+	elif [[ "$type" =~ ^text/ ]] || [[ "$encoding" == us-ascii ]]; then
+        bat --language=markdown "$file"
+    #### IMAGES
+    elif [[ "$type" =~ ^image/ ]]; then
+        # Calculate window size for previewing images
+        dim=${FZF_PREVIEW_COLUMNS}x$((FZF_PREVIEW_LINES - 1))
+        kitty icat --clear --transfer-mode=memory --unicode-placeholder --stdin=no --place="$dim@0x0" "$file" | sed '$d' | sed $'$s/$/\e[m/'
+	#### BINARY - Keep this one second to last. Otherwise, some potentially
+    #### readable files may not display correctly in the fzf preview.
+    elif [[ "$encoding" == "binary" ]]; then
+	    echo "Binary file detected. Displaying up to 500 lines of hexdump:"
+        hexdump -C "$file" | head -n 500
+    #### FALLBACK - keep this one last.
+    else
+        echo "File type: $type | Encoding: $encoding"
+        echo "Previews are not configured for this file type."
+        echo "Consider adding a custom preview handler for this file type to the fzf-pkg-files script."
+        echo "Attempting to parse; file may not be readable:"
+        bat --language=markdown "$file"
+    fi
+}
+
+# Export the function so it can be used in the fzf preview
+export -f get_preview_command
+
+# List all files installed by pkg except dirs & empty files
+pacman -Qql "$package" | files_only | \
+# Begin fzf options
+    fzf -i --pointer ">>" --marker "**" --multi --layout=reverse --border=double \
+    --highlight-line --keep-right --header "$headerInfo1
+    $headerInfo2" \
+    --color="bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8,fg:#cdd6f4" \
+    --color="header:#f38ba8,info:#cba6f7,pointer:#f5e0dc,marker:#f5e0dc" \
+    --color="fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8" \
+    --preview="bash -c 'get_preview_command {}'" --preview-window="right,60%,wrap" \
+    --bind="enter:execute(bat {+})" \
+    --bind="esc:accept"
