@@ -102,7 +102,7 @@ This project is licensed under the MIT License, so feel free to modify, reuse, s
 
 <div align="center">
   <samp>&copy; 2024 <a href="https://github.com/kielmarj">kielmarj</a> | Licensed under the MIT License</samp><br>
-  <a href="https://www.buymeacoffee.com/kielmarj" target="_blank"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&quest;&emoji=&#x1F49C;&slug=kielmarj&button_colour=40e0d0&font_colour=a243b3&font_family=Bree&outline_colour=000000&coffee_colour=FFDD00" alt="Buy Me A Coffee" style="width:140px;height:34px;"></a>
+  <a href="https://www.buymeacoffee.com/kielmarj" target="_blank"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&quest;&emoji=&#x1F49C;&slug=kielmarj&button_colour=40e0d0&font_colour=a243b3&font_family=Bree&outline_colour=000000&coffee_colour=FFDD00" alt="Buy Me A Coffee"></a>
   <br>
 </div>
 <br>
