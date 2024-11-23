@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ------------------------------------------------------------------------------
-#    DATE 2024-11-18 | MODIFIED 2024-11-20
+#    DATE 2024-11-18 | MODIFIED 2024-11-22
 #    FILE fzf-pkg-files - Use fzf to browse all files installed by a package
 #         in the local pacman database.
 #   USAGE $0 <NAME OF INSTALLED PACKAGE OR COMMAND>
