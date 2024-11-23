@@ -90,6 +90,9 @@ get_preview_command() {
     #### FISH
     elif [[ "$file" =~ \.fish$ ]]; then
         bat --language=fish "$file"
+    #### FISH MANPAGES
+    elif [[ "$file" =~ ^/usr/share/fish/man.*$ ]]; then
+        man --nh --nj "$file" 2> /dev/null | bat --language=groovy
     #### HTML
     elif [[ "$file" =~ \.html$ ]]; then
         html2markdown < "$file" | fold -s | bat --language=markdown
